@@ -1,0 +1,22 @@
+{
+  "name": "K13A.TSMP.Codec.Rgb16",
+  "rootNamespace": "K13A.TSMP",
+  "references": [
+    "K13A.TSMP.Core",
+    "UdonSharp.Runtime",
+    "UdonSharp.Lib",
+    "VRC.SDKBase",
+    "VRC.SDK3",
+    "VRC.Udon",
+    "VRC.Udon.Serialization.OdinSerializer"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

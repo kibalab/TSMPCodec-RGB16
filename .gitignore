@@ -55,6 +55,25 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+/dist/
+/dist.meta
+/UserSettings/
+/Assets/SerializedUdonPrograms/
+/Assets/SerializedUdonPrograms.meta
+/Assets/Scenes/
+/Assets/Scenes.meta
+/Assets/UdonSharp/
+/Assets/UdonSharp.meta
+/Assets/XR/
+/Assets/XR.meta
+/Packages/com.kibalab.tsmp.core/
+/Packages/com.kibalab.tsmp.core.meta
+/ProjectSettings/MemorySettings.asset
+/ProjectSettings/Packages/
+/ProjectSettings/SceneTemplateSettings.json
+/ProjectSettings/VersionControlSettings.asset
+/ProjectSettings/XRPackageSettings.asset
+
 # Crashlytics generated file
 crashlytics-build.properties
 

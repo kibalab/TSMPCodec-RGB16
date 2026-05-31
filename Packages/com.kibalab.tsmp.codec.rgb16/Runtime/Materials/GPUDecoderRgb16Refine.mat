@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GPUDecoderRgb16Refine
+  m_Shader: {fileID: 4800000, guid: 8a7ce81db24e4e73aa69d6a69c63c4e1, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 8600000, guid: 802e4542fd374664aa4d0858e525b454, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ActiveWidthBlocks: 80
+    - _BlockSize: 8
+    - _ByteCount: 500
+    - _FlipY: 1
+    - _OutputHeight: 1
+    - _OutputWidth: 4096
+    - _RefineRadius: 2
+    - _Rgb16CalibrationStartBlock: 400
+    - _SampleSize: 1
+    - _SourceHeight: 360
+    - _SourceWidth: 640
+    - _StartBlock: 480
+    m_Colors: []
+  m_BuildTextureStacks: []

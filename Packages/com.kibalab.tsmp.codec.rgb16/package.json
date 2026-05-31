@@ -1,0 +1,19 @@
+{
+  "name": "com.kibalab.tsmp.codec.rgb16",
+  "displayName": "TSMP Codec RGB16",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "RGB16 TSMP codec, Udon handler, shaders, materials, and prefab.",
+  "author": {
+    "name": "KIBA_Labs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "com.kibalab.tsmp.core": ">=0.0.1",
+    "com.vrchat.worlds": "3.9.0"
+  },
+  "vpmDependencies": {
+    "com.kibalab.tsmp.core": ">=0.0.1",
+    "com.vrchat.worlds": ">=3.9.0"
+  }
+}
