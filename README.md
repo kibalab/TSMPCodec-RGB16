@@ -1,44 +1,44 @@
-**한국어** | [English](README.en.md) | [日本語](README.ja.md)
+[한국어](README.ko.md) | [English](README.en.md) | **日本語**
 
 # TSMP Codec RGB16
 
-RGB16은 RGB 채널을 사용해 TSMP 심볼을 더 높은 밀도로 기록하는 코덱입니다. Luma4보다 더 많은 payload를 담을 수 있지만, 캡처/송출 경로의 색상 보존 품질에 더 민감합니다.
+RGB16 は RGB チャンネルを使い、Luma4 より高い密度で TSMP シンボルを記録する codec です。より多くの payload を扱えますが、キャプチャや配信経路の色再現性に強く依存します。
 
-## 특징
+## 特徴
 
-- RGB 기반 16-bit 계열 TSMP 심볼
-- Luma4보다 높은 데이터 밀도
-- 채널 비트 배분을 사용하는 RGB16/variable decode 경로 포함
-- 선명한 색상 보존이 가능한 화면 송출 경로에 적합
-- `TSMPSetup` Codec 탭에서 자동 검색
+- RGB ベースの 16-bit TSMP シンボル
+- Luma4 より高いデータ密度
+- RGB16 と variable channel-bit のデコード経路
+- 色を鮮明に保持できるストリーム経路に適合
+- `TSMPSetup` の Codec タブで自動検出
 
-## 요구 사항
+## 要件
 
 - TSMP Core: https://github.com/kibalab/TSMP-Core
-- `com.kibalab.tsmp.core` 0.0.1 이상
-- VRChat Worlds SDK 3.9.0 이상
+- `com.kibalab.tsmp.core` 0.0.1 以降
+- VRChat Worlds SDK 3.9.0 以降
 
-## 설치
+## インストール
 
-VRChat Creator Companion에서 VPM 저장소를 추가합니다.
+VRChat Creator Companion で VPM リポジトリを追加します。
 
 ```text
 https://vpm.kiba.red/
 ```
 
-그 다음 `TSMP Core`와 `TSMP Codec RGB16`을 설치합니다.
+その後、`TSMP Core` と `TSMP Codec RGB16` をインストールします。
 
-## 사용 방법
+## 使い方
 
-1. Core 패키지의 `Packages/com.kibalab.tsmp.core/Samples/TSMPController.prefab`을 씬에 배치합니다.
-2. `TSMPSetup`의 Codec 탭에서 `Refresh Codecs`를 누릅니다.
-3. `RGB16`을 선택합니다.
-4. `Apply Setup`을 실행합니다.
+1. Core パッケージの `Packages/com.kibalab.tsmp.core/Samples/TSMPController.prefab` をシーンに配置します。
+2. `TSMPSetup` の Codec タブで `Refresh Codecs` を押します。
+3. `RGB16` を選択します。
+4. `Apply Setup` を実行します。
 
-## 배포 상태
+## リリース状態
 
-현재 beta 단계이며 패키지 버전과 Git 태그는 `v0.0.x-beta.x` 형식을 사용합니다.
+このパッケージは beta 段階で、`v0.0.x-beta.x` 形式のタグを使用します。
 
-## 라이선스
+## ライセンス
 
 MIT License. Copyright (c) 2026 KIBA_Labs.

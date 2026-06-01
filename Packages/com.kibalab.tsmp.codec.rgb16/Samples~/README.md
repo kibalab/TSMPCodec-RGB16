@@ -1,3 +1,3 @@
 # TSMP RGB16 Sample
 
-Use the TSMP Core controller sample, select `RGB16` in the `TSMPSetup` Codec tab, then run `Apply Setup`.
+TSMP Core の controller sample を使用し、`TSMPSetup` の Codec タブで `RGB16` を選択してから `Apply Setup` を実行します。
