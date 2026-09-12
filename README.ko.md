@@ -15,8 +15,9 @@ RGB16은 RGB 채널을 사용해 TSMP 심볼을 더 높은 밀도로 기록하�
 ## 요구 사항
 
 - TSMP Core: https://github.com/kibalab/TSMP-Core
-- `com.kibalab.tsmp.core` 0.0.1 이상
-- VRChat Worlds SDK 3.9.0 이상
+- `com.kibalab.tsmp.core` 0.2.0 이상
+- Unity 2022.3
+- VRChat에서 사용할 때만 Worlds SDK 3.9.0 이상 필요. 일반 Unity에는 SDK가 필요하지 않습니다.
 
 ## 설치
 
@@ -28,12 +29,13 @@ https://vpm.kiba.red/
 
 그 다음 `TSMP Core`와 `TSMP Codec RGB16`을 설치합니다.
 
+일반 Unity에서는 Unity Package Manager로 Core 0.2.0, 기본 의존 코덱 Luma4, 이 코덱을 설치합니다. 로컬 저장소는 각 package.json을 Add package from disk로 추가할 수 있으며 VRCSDK를 설치할 필요가 없습니다. UPM은 Core 0.2.0을 지정하고, VPM은 Core 0.2.0 이상을 허용합니다.
+
 ## 사용 방법
 
 1. Core 패키지의 `Packages/com.kibalab.tsmp.core/Samples/TSMPController.prefab`을 씬에 배치합니다.
-2. `TSMPSetup`의 Codec 탭에서 `Refresh Codecs`를 누릅니다.
-3. `RGB16`을 선택합니다.
-4. `Apply Setup`을 실행합니다.
+2. `TSMPSetup`의 Codec 탭에서 자동 검색된 `RGB16`을 선택합니다.
+3. 일반 Unity와 VRChat 모두 같은 방식으로 코덱과 머티리얼을 자동 준비합니다. 별도 변환 메뉴는 필요하지 않습니다.
 
 ## 배포 상태
 

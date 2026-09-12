@@ -32,7 +32,7 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
             #pragma target 3.5
             #pragma vertex vert
             #pragma fragment frag
-            #include "../../../com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
+            #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
 
             float _Rgb16CalibrationStartBlock;
             float _RBits;
@@ -111,7 +111,7 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
                 return ((symbol >> bitShift) & lowMask) | ((nextSymbol & highMask) << bitsFromFirst);
             }
 
-            #include "../../../com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeByteOutput.cginc"
+            #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeByteOutput.cginc"
             ENDCG
         }
     }

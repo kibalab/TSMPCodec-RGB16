@@ -29,7 +29,7 @@ Shader "Hidden/TSMP/Decode RGB16 Bytes"
             #pragma target 3.5
             #pragma vertex vert
             #pragma fragment frag
-            #include "../../../com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
+            #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
 
             float _Rgb16CalibrationStartBlock;
 

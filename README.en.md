@@ -15,8 +15,9 @@ RGB16 records TSMP symbols through RGB channels at higher density than Luma4. It
 ## Requirements
 
 - TSMP Core: https://github.com/kibalab/TSMP-Core
-- `com.kibalab.tsmp.core` 0.0.1 or newer
-- VRChat Worlds SDK 3.9.0 or newer
+- `com.kibalab.tsmp.core` 0.2.0 or newer
+- Unity 2022.3
+- VRChat Worlds SDK 3.9.0 or newer only for VRChat; not required in ordinary Unity
 
 ## Installation
 
@@ -28,12 +29,13 @@ https://vpm.kiba.red/
 
 Then install `TSMP Core` and `TSMP Codec RGB16`.
 
+For ordinary Unity, install Core 0.2.0, its Luma4 dependency and this codec through Unity Package Manager. For a local checkout, use Add package from disk on each package.json; VRCSDK is not required. UPM uses an exact Core 0.2.0 dependency; VPM accepts Core 0.2.0 or newer.
+
 ## Usage
 
 1. Add `Packages/com.kibalab.tsmp.core/Samples/TSMPController.prefab` from the Core package to your scene.
-2. Open the Codec tab in `TSMPSetup` and click `Refresh Codecs`.
-3. Select `RGB16`.
-4. Click `Apply Setup`.
+2. Open the Codec tab in `TSMPSetup` and select `RGB16` from the automatically discovered codecs.
+3. Setup prepares the codec and its materials automatically in both ordinary Unity and VRChat. No conversion menu is needed.
 
 ## Release Status
 
