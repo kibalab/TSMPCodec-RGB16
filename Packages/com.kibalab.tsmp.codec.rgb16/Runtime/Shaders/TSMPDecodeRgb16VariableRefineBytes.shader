@@ -88,6 +88,24 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Refine Bytes"
                 int bestB = b0;
                 float bestDistance = 999999.0;
 
+                float rCandidates[7];
+                float gCandidates[7];
+                float bCandidates[7];
+                [loop]
+                for (int candidate = 0; candidate < 7; candidate++)
+                {
+                    int delta = candidate - radius;
+                    rCandidates[candidate] = 0.0;
+                    gCandidates[candidate] = 0.0;
+                    bCandidates[candidate] = 0.0;
+                    if (candidate <= radius * 2)
+                    {
+                        rCandidates[candidate] = SampleChannelCalibration(clamp(r0 + delta, 0, rCount - 1), 0, 0, rCount);
+                        gCandidates[candidate] = SampleChannelCalibration(clamp(g0 + delta, 0, gCount - 1), gOffset, 1, gCount);
+                        bCandidates[candidate] = SampleChannelCalibration(clamp(b0 + delta, 0, bCount - 1), bOffset, 2, bCount);
+                    }
+                }
+
                 [loop]
                 for (int db = -3; db <= 3; db++)
                 {
@@ -107,9 +125,9 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Refine Bytes"
                             int g = clamp(g0 + dg, 0, gCount - 1);
                             int b = clamp(b0 + db, 0, bCount - 1);
                             float3 c = RgbToYCoCg(float3(
-                                SampleChannelCalibration(r, 0, 0, rCount),
-                                SampleChannelCalibration(g, gOffset, 1, gCount),
-                                SampleChannelCalibration(b, bOffset, 2, bCount)));
+                                rCandidates[dr + radius],
+                                gCandidates[dg + radius],
+                                bCandidates[db + radius]));
                             float3 d = p - c;
                             float distance = d.x * d.x * 2.0 + d.y * d.y * 0.85 + d.z * d.z * 0.85;
                             if (distance < bestDistance)

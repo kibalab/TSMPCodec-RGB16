@@ -75,6 +75,24 @@ Shader "Hidden/TSMP/Decode RGB16 Refine Bytes"
                 int bestB = b0;
                 float bestDistance = 999999.0;
 
+                float rCandidates[7];
+                float gCandidates[7];
+                float bCandidates[7];
+                [loop]
+                for (int candidate = 0; candidate < 7; candidate++)
+                {
+                    int delta = candidate - radius;
+                    rCandidates[candidate] = 0.0;
+                    gCandidates[candidate] = 0.0;
+                    bCandidates[candidate] = 0.0;
+                    if (candidate <= radius * 2)
+                    {
+                        rCandidates[candidate] = SampleChannelCalibration(clamp(r0 + delta, 0, 15), 0, 0);
+                        gCandidates[candidate] = SampleChannelCalibration(clamp(g0 + delta, 0, 15), 16, 1);
+                        bCandidates[candidate] = SampleChannelCalibration(clamp(b0 + delta, 0, 15), 32, 2);
+                    }
+                }
+
                 [loop]
                 for (int db = -3; db <= 3; db++)
                 {
@@ -94,9 +112,9 @@ Shader "Hidden/TSMP/Decode RGB16 Refine Bytes"
                             int g = clamp(g0 + dg, 0, 15);
                             int b = clamp(b0 + db, 0, 15);
                             float3 c = RgbToYCoCg(float3(
-                                SampleChannelCalibration(r, 0, 0),
-                                SampleChannelCalibration(g, 16, 1),
-                                SampleChannelCalibration(b, 32, 2)));
+                                rCandidates[dr + radius],
+                                gCandidates[dg + radius],
+                                bCandidates[db + radius]));
                             float3 d = p - c;
                             float distance = d.x * d.x * 2.0 + d.y * d.y * 0.85 + d.z * d.z * 0.85;
                             if (distance < bestDistance)
