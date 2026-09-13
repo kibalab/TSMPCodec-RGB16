@@ -1,0 +1,40 @@
+name: Documentation or validation task
+description: Track missing documentation, compatibility checks or release prerequisites.
+labels: ["needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for work that is not a reproduced bug. English, Japanese and Korean reports are welcome.
+        Keep the scope focused and link related issues.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Task type
+      options:
+        - Documentation
+        - Validation
+        - Package integration or release prerequisite
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: What needs to be done?
+      description: Identify the page, environment or package combination and explain why it needs attention.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Current evidence and gaps
+      description: Separate completed checks, failures and checks that have not been run. Include versions, commands or source links where available.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Completion criteria
+      description: List the documentation changes or verifiable results needed to close this task.
+    validations:
+      required: true

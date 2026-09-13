@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: TSMP documentation
+    url: https://kibalab.github.io/TSMP-Core/
+    about: Installation, component usage and scripting API documentation.

@@ -1,0 +1,35 @@
+name: Improvement proposal
+description: Propose a feature, performance improvement or API change.
+labels: ["enhancement", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first and link related issues. English, Japanese and Korean reports are welcome.
+        Keep one independently implementable change per issue.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: Describe the current limitation and who is affected. For performance work, include the workload and measurements, or state that it is not measured yet.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change and alternatives
+      description: Explain the desired behavior. A specific implementation is optional.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Completion criteria
+      description: Describe observable results and necessary tests. Note compatibility, wire-format, Unity/UdonSharp and resource-cost constraints when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Related issues and evidence
+      description: Link issues, code, documentation or profiling results. Do not include credentials or private stream URLs.
