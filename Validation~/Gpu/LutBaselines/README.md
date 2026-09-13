@@ -11,4 +11,3 @@ preparation pass in GPU timings.
 The updated codec requires Core's new `PrepareDecode` API. Update both
 source checkouts together; release the Core API and adjust the minimum
 Core dependency before publishing the codec. No release is created here.
-

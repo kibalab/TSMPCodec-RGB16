@@ -31,7 +31,6 @@ Shader "Hidden/TSMP/Prepare RGB16 Calibration"
             #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
 
             float _Rgb16CalibrationStartBlock;
-            
 
             float4 frag(v2f i) : SV_Target
             {
