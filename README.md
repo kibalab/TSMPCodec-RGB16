@@ -15,7 +15,7 @@ RGB16 は RGB チャンネルを使い、Luma4 より高い密度で TSMP シン
 ## 要件
 
 - TSMP Core: https://github.com/kibalab/TSMP-Core
-- `com.kibalab.tsmp.core` 0.2.0 以降
+- `com.kibalab.tsmp.core` 0.3.0-beta.2 以降
 - Unity 2022.3
 - VRChat で使用する場合のみ Worlds SDK 3.9.0 以降が必要です。通常の Unity には不要です。
 
@@ -29,7 +29,7 @@ https://vpm.kiba.red/
 
 その後、`TSMP Core` と `TSMP Codec RGB16` をインストールします。
 
-通常の Unity では Unity Package Manager で Core 0.2.0、その依存 codec Luma4、この codec をインストールします。ローカル checkout は各 package.json を Add package from disk で追加できます。VRCSDK は不要です。UPM は Core 0.2.0 を指定し、VPM は Core 0.2.0 以降を許可します。
+通常の Unity では Unity Package Manager で Core 0.3.0-beta.2、基本 codec の Luma4、この codec をインストールします。ローカル checkout は各 package.json を Add package from disk で追加できます。VRCSDK は不要です。UPM は Core 0.3.0-beta.2 を指定し、VPM は Core 0.3.0-beta.2 以降を許可します。
 
 ## 使い方
 
@@ -44,3 +44,9 @@ https://vpm.kiba.red/
 ## ライセンス
 
 MIT License. Copyright (c) 2026 KIBA_Labs.
+
+## 準備 API の互換性
+
+このソースには、現在リリース候補の Core 0.3.0-beta.2 が必要です。Core 0.2.0 と 0.3.0-beta.1 には `PrepareDecode` がなく、準備マテリアルを未設定にしてもコンパイルできません。このコーデックより先に対応 Core を公開・インストールしてください。準備マテリアル不足時の従来シェーダーへの fallback は、コンパイル後にのみ機能します。
+
+UPM にはバージョン文字列、VPM には範囲を指定します。ローカル/ディスクまたは Git インストールでは、プロジェクトの依存関係に対応 Core も直接指定します。パッケージのメタデータだけでは UPM は GitHub から Core を取得しません。VPM ベータは公開後に試験版表示を有効にし、対応バージョンを選んでください。

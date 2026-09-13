@@ -15,7 +15,7 @@ RGB16 records TSMP symbols through RGB channels at higher density than Luma4. It
 ## Requirements
 
 - TSMP Core: https://github.com/kibalab/TSMP-Core
-- `com.kibalab.tsmp.core` 0.2.0 or newer
+- `com.kibalab.tsmp.core` 0.3.0-beta.2 or newer
 - Unity 2022.3
 - VRChat Worlds SDK 3.9.0 or newer only for VRChat; not required in ordinary Unity
 
@@ -29,7 +29,7 @@ https://vpm.kiba.red/
 
 Then install `TSMP Core` and `TSMP Codec RGB16`.
 
-For ordinary Unity, install Core 0.2.0, its Luma4 dependency and this codec through Unity Package Manager. For a local checkout, use Add package from disk on each package.json; VRCSDK is not required. UPM uses an exact Core 0.2.0 dependency; VPM accepts Core 0.2.0 or newer.
+For ordinary Unity, install Core 0.3.0-beta.2, the default Luma4 codec and this codec through Unity Package Manager. For a local checkout, use Add package from disk on each package.json; VRCSDK is not required. UPM uses an exact Core 0.3.0-beta.2 dependency; VPM accepts Core 0.3.0-beta.2 or newer.
 
 ## Usage
 
@@ -44,3 +44,9 @@ This package is currently beta and uses `v0.0.x-beta.x` tags.
 ## License
 
 MIT License. Copyright (c) 2026 KIBA_Labs.
+
+## Preparation API compatibility
+
+This source requires Core 0.3.0-beta.2, currently a release candidate. Core 0.2.0 and 0.3.0-beta.1 lack `PrepareDecode` and cannot compile this codec, even when the calibration material is unassigned. Publish and install the matching Core before this codec. A missing preparation material only selects the original shader path after compilation.
+
+UPM uses a version string, while VPM uses a version range. Local/disk or Git installs must supply a compatible Core directly in the project's dependencies; package metadata does not tell UPM to fetch Core from GitHub. For VPM betas, enable pre-release packages and select the matching versions after publication.
