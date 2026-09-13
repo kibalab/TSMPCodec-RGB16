@@ -100,7 +100,8 @@ public sealed class GpuShaderValidation : MonoBehaviour
         foreach(string shaderName in shaders)
         {
             var oldMaterial = new Material(AssetDatabase.LoadAssetAtPath<Shader>(Generated + "/" + shaderName + ".shader"));
-            var newMaterial = new Material(AssetDatabase.LoadAssetAtPath<Shader>(Package + "/Runtime/Shaders/" + shaderName + ".shader"));
+            string candidateFolder = Environment.GetEnvironmentVariable("TSMP_GPU_CANDIDATE_ASSET_PATH") ?? Package + "/Runtime/Shaders";
+            var newMaterial = new Material(AssetDatabase.LoadAssetAtPath<Shader>(candidateFolder + "/" + shaderName + ".shader"));
             foreach(Material m in new[]{oldMaterial,newMaterial}) { ShaderUtil.CompilePass(m,0,true); if(ShaderUtil.ShaderHasError(m.shader)) throw new Exception("Shader compile error: " + m.shader.name); }
             int[][] modes = CodecName == "RGB20" ? new[]{new[]{7,7,6}} : !shaderName.Contains("Variable") ? new[]{new[]{4,4,4}} : Mode == "G02" ? new[]{new[]{5,6,4},new[]{8,8,4}} :
                 new[]{new[]{1,1,1},new[]{1,1,4},new[]{2,3,3},new[]{4,4,4},new[]{5,6,4},new[]{6,6,4},new[]{8,8,4}};
@@ -122,14 +123,11 @@ public sealed class GpuShaderValidation : MonoBehaviour
                     foreach(Material m in new[]{oldMaterial,newMaterial}) Setup(m,count,codec.GetPayloadStartRow(1280,8)*160,sample,radius,bits);
                     Graphics.Blit(input,output,newMaterial);byte[] actual=Read(output);
                     bool roundTrip = payload.Take(count).SequenceEqual(actual.Take(count));
-                    if(Mode=="G02" || bits.Sum()>=8)
-                    {
-                        Graphics.Blit(input,output,oldMaterial);byte[] expected=Read(output);
-                        if(!expected.SequenceEqual(actual)) throw new Exception($"Shader outputs differ: {shaderName}, bits={string.Join("/",bits)}, sample={sample}, radius={radius}, count={count}, input={input==source}");
-                    }
+                    Graphics.Blit(input,output,oldMaterial);byte[] expected=Read(output);
+                    if(!expected.SequenceEqual(actual)) throw new Exception($"Shader outputs differ: {shaderName}, bits={string.Join("/",bits)}, sample={sample}, radius={radius}, count={count}, input={input==source}");
                     if(input==source && !roundTrip)
                     {
-                        if(bits.Max()<8) throw new Exception($"Round-trip failed: {shaderName}, bits={string.Join("/",bits)}, sample={sample}, radius={radius}, count={count}");
+                        if(bits.Max()<8 && bits.Sum()>=8) throw new Exception($"Round-trip failed: {shaderName}, bits={string.Join("/",bits)}, sample={sample}, radius={radius}, count={count}");
                         baselineRoundTripFailures++;
                     }
                     if(actual.Skip(count).Any(value=>value!=0)) throw new Exception("Nonzero trailing bytes");
@@ -139,7 +137,7 @@ public sealed class GpuShaderValidation : MonoBehaviour
                 foreach(int sample in new[]{1,4}) foreach(int count in new[]{4,56,1027})
                 {
                     foreach(Material m in new[]{oldMaterial,newMaterial}) Setup(m,count,codec.GetPayloadStartRow(1280,8)*160,sample,2,bits);
-                    yield return Measure(shaderName+",sample="+sample+",bytes="+count,source,output,oldMaterial,newMaterial);
+                    yield return Measure(shaderName+",bits="+string.Join("/",bits)+",sample="+sample+",bytes="+count,source,output,oldMaterial,newMaterial);
                 }
                 output.Release();foreach(Object item in new Object[]{source,noisy,flat,output})Object.Destroy(item);
             }
@@ -147,7 +145,7 @@ public sealed class GpuShaderValidation : MonoBehaviour
         }
         Object.Destroy(instance);
         results.Add("GPU output cases="+checks);
-        results.Add("Existing eight-bit-channel quantization round-trip failures="+baselineRoundTripFailures);
+        results.Add("Existing low-bit packing or eight-bit-channel quantization round-trip failures="+baselineRoundTripFailures);
     }
 
     static Texture2D Noise(Texture2D source)
@@ -170,22 +168,81 @@ public sealed class GpuShaderValidation : MonoBehaviour
         if(request.hasError)throw new Exception("GPU readback failed");return request.GetData<byte>().ToArray();
     }
 
-    IEnumerator Measure(string label,Texture source,RenderTexture output,Material baseline,Material candidate)
+    IEnumerator Measure(string label, Texture source, RenderTexture output, Material baseline, Material candidate)
     {
-        var sa=CustomSampler.Create("TSMP.Compare.A",true);var sb=CustomSampler.Create("TSMP.Compare.B",true);
-        var a=new CommandBuffer();a.BeginSample(sa);a.Blit(source,output,baseline);a.EndSample(sa);
-        var b=new CommandBuffer();b.BeginSample(sb);b.Blit(source,output,candidate);b.EndSample(sb);
-        var ra=sa.GetRecorder();var rb=sb.GetRecorder();ra.enabled=true;rb.enabled=true;
-        var av=new List<double>();var bv=new List<double>();
-        for(int frame=0;frame<65;frame++)
+        const int repeats = 32;
+        var samplerA = CustomSampler.Create("TSMP.A." + label, true);
+        var samplerB = CustomSampler.Create("TSMP.B." + label, true);
+        var a = new CommandBuffer();
+        var b = new CommandBuffer();
+        a.BeginSample(samplerA);
+        b.BeginSample(samplerB);
+        for (int i = 0; i < repeats; i++)
         {
-            if((frame&1)==0){Graphics.ExecuteCommandBuffer(a);Graphics.ExecuteCommandBuffer(b);}else{Graphics.ExecuteCommandBuffer(b);Graphics.ExecuteCommandBuffer(a);}
-            if(frame>=20 && ra.gpuSampleBlockCount==1 && rb.gpuSampleBlockCount==1){av.Add(ra.gpuElapsedNanoseconds/1000.0);bv.Add(rb.gpuElapsedNanoseconds/1000.0);}
-            yield return null;
+            a.Blit(source, output, baseline);
+            b.Blit(source, output, candidate);
         }
-        a.Dispose();b.Dispose();
-        if(av.Count<20 || av.All(value=>value<=0))throw new Exception("GPU timing unavailable");
-        av.Sort();bv.Sort();string line=$"TIMING,{label},before_us={av[av.Count/2]:F3},after_us={bv[bv.Count/2]:F3},samples={av.Count}";results.Add(line);Debug.Log(line);
+        a.EndSample(samplerA);
+        b.EndSample(samplerB);
+        var recorderA = samplerA.GetRecorder();
+        var recorderB = samplerB.GetRecorder();
+        recorderA.enabled = true;
+        recorderB.enabled = true;
+        var gpuA = new List<double>();
+        var gpuB = new List<double>();
+        var wallA = new List<double>();
+        var wallB = new List<double>();
+        for (int frame = 0; frame < 25; frame++)
+        {
+            double elapsedA;
+            double elapsedB;
+            if ((frame & 1) == 0)
+            {
+                elapsedA = SubmitAndWait(a, output);
+                elapsedB = SubmitAndWait(b, output);
+            }
+            else
+            {
+                elapsedB = SubmitAndWait(b, output);
+                elapsedA = SubmitAndWait(a, output);
+            }
+            yield return null;
+            if (frame < 10)
+                continue;
+            wallA.Add(elapsedA / repeats);
+            wallB.Add(elapsedB / repeats);
+            if (recorderA.gpuSampleBlockCount == 1 && recorderB.gpuSampleBlockCount == 1
+                && recorderA.gpuElapsedNanoseconds > 0 && recorderB.gpuElapsedNanoseconds > 0)
+            {
+                gpuA.Add(recorderA.gpuElapsedNanoseconds / 1000.0 / repeats);
+                gpuB.Add(recorderB.gpuElapsedNanoseconds / 1000.0 / repeats);
+            }
+        }
+        a.Dispose();
+        b.Dispose();
+        recorderA.enabled = false;
+        recorderB.enabled = false;
+        if (gpuA.Count < 10)
+            throw new Exception("GPU timing unavailable: " + label);
+        gpuA.Sort();
+        gpuB.Sort();
+        wallA.Sort();
+        wallB.Sort();
+        string line = $"TIMING,{label},before_us={gpuA[gpuA.Count / 2]:F3},after_us={gpuB[gpuB.Count / 2]:F3},wall_before_us={wallA[wallA.Count / 2]:F3},wall_after_us={wallB[wallB.Count / 2]:F3},samples={gpuA.Count},batch={repeats}";
+        results.Add(line);
+        Debug.Log(line);
+    }
+
+    static double SubmitAndWait(CommandBuffer commands, RenderTexture output)
+    {
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        Graphics.ExecuteCommandBuffer(commands);
+        var readback = AsyncGPUReadback.Request(output, 0, TextureFormat.RGBA32);
+        readback.WaitForCompletion();
+        stopwatch.Stop();
+        if (readback.hasError)
+            throw new Exception("Timing readback failed");
+        return stopwatch.Elapsed.TotalMilliseconds * 1000.0;
     }
 }
 #endif
