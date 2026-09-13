@@ -27,7 +27,7 @@ Use the same Markdown template for browser, CLI and API-created issues:
 | [Improvement proposal](.github/ISSUE_TEMPLATE/improvement.md) | Features, performance and API changes |
 | [Documentation or validation](.github/ISSUE_TEMPLATE/task.md) | Documentation, compatibility checks and release prerequisites |
 
-The browser offers these templates through **New issue**. In GitHub CLI, use `gh issue create --template bug.md` (or the other template filename). The templates use Japanese section headings; contributors may write their answers in English, Japanese or Korean.
+The browser offers these templates through **New issue**. In GitHub CLI, use `gh issue create --template bug.md` (or the other template filename). Template names, headings and instructions are in English. Contributors may write their answers in English, Japanese or Korean. Maintainer-authored review issues remain in Japanese, following the same structure.
 
 For issues created through the API, read the matching template first, omit its YAML front matter from the submitted body, follow its section structure and explicitly supply the appropriate labels. Replace instructional text with the findings; do not submit unfilled placeholders. State when a section is not applicable or a check was not run.
 

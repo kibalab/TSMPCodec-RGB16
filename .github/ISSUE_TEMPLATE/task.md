@@ -1,33 +1,33 @@
 ---
-name: "Documentation or validation / 文書・検証"
+name: "Documentation or validation"
 about: "Track documentation gaps, compatibility checks or release prerequisites."
 labels: "needs triage"
 ---
 
-English, 日本語, 한국어で記載できます。再現済みの不具合は Bug report を使ってください。案内文は記入内容に置き換えてください。
+Reports in English, Japanese or Korean are welcome. Use Bug report for a reproduced defect. Replace the instructions below with the task details.
 
-## 目的・対象
+## Objective and scope
 
-修正する文書、検証する環境、対象パッケージとバージョンなどを特定してください。
+Identify the documentation, environments, packages and versions involved.
 
-## 現在の状況
+## Current status
 
-分かっていることと不足していることを記載してください。検証済み・失敗・未実施を区別し、根拠となるコード、文書、ログへリンクしてください。
+Describe what is known and what is missing. Distinguish completed, failed and unperformed checks, and link the supporting code, documentation or logs.
 
-## 作業内容
+## Work required
 
-必要な変更や検証の手順、対象外とする範囲を記載してください。文書の場合は必要な言語も含めてください。
+Describe the changes or validation steps and what is out of scope. Include the required languages for documentation changes.
 
-## 完了条件
+## Completion criteria
 
-- [ ] 完了を判断できる文書の状態または具体的な検証結果を記載する。
+- [ ] Describe the required documentation state or concrete verification results.
 
-## 検証結果
+## Validation results
 
-作成時点では「未実施」でも構いません。実施後は環境・バージョン・コマンドまたは Editor 手順・実際の結果・ログを追記してください。パッケージ作成 workflow の成功を Unity / UdonSharp コンパイルや Player 実行の成功として扱わないでください。
+Enter "Not run" if validation has not started. After testing, record the environment, versions, commands or Editor steps, actual results and logs. A successful packaging workflow does not verify Unity or UdonSharp compilation or Player execution.
 
-認証情報、アクセスキー、非公開の配信 URL、ログ内の個人情報は含めないでください。
+Do not include credentials, access tokens, private stream URLs or personal data from logs.
 
-## 関連イシュー
+## Related issues
 
-同じリポジトリは `#番号`、別リポジトリは `kibalab/リポジトリ名#番号` で参照してください。リリースの前提条件は担当リポジトリのイシューへリンクし、なければ「なし」と記載してください。
+Use `#123` within this repository or `kibalab/repository#123` across repositories. Link release prerequisites to the issue in the responsible repository. Enter "None" if there are no related issues.

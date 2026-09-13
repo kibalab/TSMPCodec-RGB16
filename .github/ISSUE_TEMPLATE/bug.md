@@ -1,49 +1,49 @@
 ---
-name: "Bug report / 不具合報告"
+name: "Bug report"
 about: "Report incorrect behavior with reproduction steps or source evidence."
 labels: "bug, needs triage"
 ---
 
-English, 日本語, 한국어で報告できます。既存イシューを検索し、同じ原因の報告がないことを確認してください。案内文は記入内容に置き換えてください。
+Reports in English, Japanese or Korean are welcome. Search existing issues for the same cause before opening another. Replace the instructions below with your findings.
 
-## 現象
+## Actual behavior
 
-どのコンポーネントで、どの条件のときに、何が起きるかを具体的に記載してください。
+Identify the affected component, the conditions that trigger the problem and what happens.
 
-## 期待する動作
+## Expected behavior
 
-同じ条件で本来どう動作すべきかを記載してください。
+Describe how the component should behave under the same conditions.
 
-## 発生条件・再現手順
+## Conditions and reproduction steps
 
-最小限のシーン構成と設定を含めてください。未再現のソースレビューなら、その旨と問題が発生するコード上の条件を記載してください。
+Include the minimum scene configuration and settings. For a source-review finding that has not been reproduced, say so and describe the conditions under which the code would fail.
 
-1. オブジェクト・コンポーネント・設定:
-2. 実行する操作:
-3. 発生した結果:
+1. Objects, components and settings:
+2. Action performed:
+3. Observed result:
 
-## 環境
+## Environment
 
-該当しない項目は「対象外」、SDK がない環境は「未導入」と記載してください。
+Enter "not applicable" where appropriate and "not installed" if the SDK is absent.
 
-- TSMP Core / codec のバージョンまたはコミット:
+- TSMP Core / codec version or commit:
 - Unity:
 - VRChat SDK / UdonSharp:
-- 確認した環境（Editor 編集時 / Play Mode / Standalone Player / Udon VM / VRChat 実機 / ソースレビューのみ）:
+- Tested environment (Editor edit mode / Play Mode / Standalone Player / Udon VM / VRChat client / source review only):
 - OS:
-- GPU / graphics API（描画に関係する場合）:
-- Player backend / stripping 設定（Player に関係する場合）:
+- GPU / graphics API (for rendering issues):
+- Player backend / stripping settings (for Player issues):
 
-## 根拠・確認状況
+## Evidence and verification status
 
-関連コードへの固定コミットリンク、最初のエラー、ログ、画像、最小再現例を記載してください。実行した検証と未実施の検証を区別してください。C# コンパイル成功を UdonSharp コンパイルや実機動作の確認として扱わないでください。
+Include links to code at a fixed commit, the first error, logs, screenshots or a minimal reproduction. Separate checks that were actually run from checks that have not been run. C# compilation does not verify UdonSharp compilation or runtime behavior.
 
-認証情報、アクセスキー、非公開の配信 URL、ログ内の個人情報は含めないでください。
+Do not include credentials, access tokens, private stream URLs or personal data from logs.
 
-## 完了条件
+## Completion criteria
 
-- [ ] 修正完了を判断できる具体的な動作と回帰テストを記載する。
+- [ ] Describe the observable behavior and regression tests required to consider this fixed.
 
-## 関連イシュー
+## Related issues
 
-同じリポジトリは `#番号`、別リポジトリは `kibalab/リポジトリ名#番号` で参照してください。なければ「なし」と記載してください。
+Use `#123` within this repository or `kibalab/repository#123` across repositories. Enter "None" if there are no related issues.

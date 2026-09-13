@@ -1,35 +1,35 @@
 ---
-name: "Improvement proposal / 改善提案"
+name: "Improvement proposal"
 about: "Propose a feature, performance improvement or API change."
 labels: "enhancement, needs triage"
 ---
 
-English, 日本語, 한국어で提案できます。独立して実装できる変更を 1 件にまとめ、案内文は記入内容に置き換えてください。
+Proposals in English, Japanese or Korean are welcome. Keep one independently implementable change per issue and replace the instructions below with your proposal.
 
-## 解決したい課題
+## Problem to solve
 
-現在できないこと、困っている利用者や構成、改善が必要な理由を記載してください。
+Describe the current limitation, the affected users or configurations and why an improvement is needed.
 
-## 提案内容
+## Proposed change
 
-希望する動作と代替案を記載してください。具体的な実装方法は未定でも構いません。
+Describe the desired behavior and alternatives. A specific implementation is optional.
 
-## 根拠・計測結果
+## Evidence and measurements
 
-関連コード、ログ、プロファイル、利用例を記載してください。性能改善の場合は対象データ量、環境、変更前後の測定値を示し、未計測なら明記してください。機密情報は含めないでください。
+Include relevant code, logs, profiles or use cases. For performance work, provide the workload, environment and before/after measurements, or explicitly state that the cost has not been measured. Do not include sensitive information.
 
-## 互換性・制約
+## Compatibility and constraints
 
-通常の Unity と UdonSharp、既存 API、通信形式、asset GUID、CPU / GPU / メモリへの影響を必要な範囲で記載してください。未確認の内容は断定しないでください。
+Describe relevant effects on ordinary Unity and UdonSharp, existing APIs, wire formats, asset GUIDs, CPU, GPU and memory. Do not present unverified assumptions as facts.
 
-## 完了条件
+## Completion criteria
 
-- [ ] 実装後に確認できる具体的な結果と検証方法を記載する。
+- [ ] Describe the observable result and how it will be verified.
 
-## 確認状況
+## Verification status
 
-実施済みの調査・テストと未実施のものを区別してください。検討だけで終了する場合も、採用・不採用を判断する基準を示してください。
+Separate completed investigations and tests from checks that have not been run. For investigation-only work, state the criteria for adopting or rejecting the proposal.
 
-## 関連イシュー
+## Related issues
 
-同じリポジトリは `#番号`、別リポジトリは `kibalab/リポジトリ名#番号` で参照してください。なければ「なし」と記載してください。
+Use `#123` within this repository or `kibalab/repository#123` across repositories. Enter "None" if there are no related issues.
