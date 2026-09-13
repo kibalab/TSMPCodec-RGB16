@@ -153,6 +153,19 @@ namespace K13A.TSMP
         }
 #endif
 
+        public override void PrepareDecode(Texture source, Material material)
+        {
+            base.PrepareDecode(source, material);
+            // 단일 샘플과 Refine 모드는 LUT 적용 후 비용이 증가해 기존 디코드 경로를 유지한다.
+            if (material == null || material == refine444ByteDecodeMaterial || material == variableRefineByteDecodeMaterial ||
+                GetDecodeSampleSize(material) <= 1)
+                return;
+            int r = material.HasProperty("_RBits") ? Mathf.Clamp((int)material.GetFloat("_RBits"), 1, 8) : 4;
+            int g = material.HasProperty("_GBits") ? Mathf.Clamp((int)material.GetFloat("_GBits"), 1, 8) : 4;
+            int b = material.HasProperty("_BBits") ? Mathf.Clamp((int)material.GetFloat("_BBits"), 1, 4) : 4;
+            PrepareCalibrationLut(source, material, (1 << r) + (1 << g) + (1 << b));
+        }
+
         public override void ApplyDecodeOptions()
         {
             int optionRBits = ReadCodecOptionByte(0, 4);
