@@ -2,6 +2,7 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
 {
     Properties
     {
+        [HideInInspector] _CalibrationLut ("Calibration LUT", 2D) = "black" {}
         _MainTex ("TSMP Source", 2D) = "black" {}
         _BlockSize ("Block Size", Float) = 8
         _SampleSize ("Sample Size", Float) = 0
@@ -32,12 +33,26 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
             #pragma target 3.5
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_local _ TSMP_CALIBRATION_LUT
             #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
+
+#if defined(TSMP_CALIBRATION_LUT)
+            Texture2D<float4> _CalibrationLut;
+#endif
 
             float _Rgb16CalibrationStartBlock;
             float _RBits;
             float _GBits;
             float _BBits;
+
+            float3 SampleRgb16Calibration(int index)
+            {
+#if defined(TSMP_CALIBRATION_LUT)
+                return _CalibrationLut.Load(int3(index, 0, 0)).rgb;
+#else
+                return SampleBlockByIndex(_Rgb16CalibrationStartBlock + index);
+#endif
+            }
 
             float ChannelValue(float3 c, int channel)
             {
@@ -46,8 +61,8 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
 
             int ClassifyChannel(float value, int count, int offset, int channel)
             {
-                float low = ChannelValue(SampleBlockByIndex(_Rgb16CalibrationStartBlock + offset), channel);
-                float high = ChannelValue(SampleBlockByIndex(_Rgb16CalibrationStartBlock + offset + count - 1), channel);
+                float low = ChannelValue(SampleRgb16Calibration(offset), channel);
+                float high = ChannelValue(SampleRgb16Calibration(offset + count - 1), channel);
                 float range = high - low;
                 int estimated = abs(range) > 0.00001 ? (int)round(saturate((value - low) / range) * (count - 1)) : count / 2;
                 int radius = count <= 32 ? 5 : 10;
@@ -59,7 +74,7 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
                 {
                     if (i > radius * 2) break;
                     int index = clamp(estimated - radius + i, 0, count - 1);
-                    float candidate = ChannelValue(SampleBlockByIndex(_Rgb16CalibrationStartBlock + offset + index), channel);
+                    float candidate = ChannelValue(SampleRgb16Calibration(offset + index), channel);
                     float distance = abs(value - candidate);
                     if (distance < bestDistance)
                     {

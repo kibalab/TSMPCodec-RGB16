@@ -2,6 +2,7 @@ Shader "Hidden/TSMP/Decode RGB16 Bytes"
 {
     Properties
     {
+        [HideInInspector] _CalibrationLut ("Calibration LUT", 2D) = "black" {}
         _MainTex ("TSMP Source", 2D) = "black" {}
         _BlockSize ("Block Size", Float) = 8
         _SampleSize ("Sample Size", Float) = 0
@@ -29,13 +30,22 @@ Shader "Hidden/TSMP/Decode RGB16 Bytes"
             #pragma target 3.5
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_local _ TSMP_CALIBRATION_LUT
             #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
+
+#if defined(TSMP_CALIBRATION_LUT)
+            Texture2D<float4> _CalibrationLut;
+#endif
 
             float _Rgb16CalibrationStartBlock;
 
             float SampleChannelCalibration(int level, int offset, int channel)
             {
+#if defined(TSMP_CALIBRATION_LUT)
+                float3 c = _CalibrationLut.Load(int3(offset + clamp(level, 0, 15), 0, 0)).rgb;
+#else
                 float3 c = SampleBlockByIndex(_Rgb16CalibrationStartBlock + offset + clamp(level, 0, 15));
+#endif
                 return channel == 0 ? c.r : channel == 1 ? c.g : c.b;
             }
 
