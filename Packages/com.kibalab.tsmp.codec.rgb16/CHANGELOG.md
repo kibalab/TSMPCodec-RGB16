@@ -1,12 +1,14 @@
 # Changelog
 
-## 0.0.3-beta.3 (Unreleased)
+## 0.0.3-beta.3
 
 - Require Core 0.3.0-beta.2 in UPM and >=0.3.0-beta.2 in VPM because the codec now calls the preparation API. Core 0.2.0 and 0.3.0-beta.1 do not provide that API.
 - Use Float32 calibration preparation for multisample direct decoding, including variable channel bits; retain the original single-sample and Refine paths.
+- Cache refinement channel candidates to avoid repeated calibration samples during candidate combinations.
+- Reuse decoded variable-bit symbols across output bytes for symbol totals of at least eight bits. Preserve the original path below eight bits and existing quantization limitations.
 - Include the preparation shader/material on the codec prefab. Missing preparation resources retain ordinary decoding with a compatible Core.
 - Preserve codec IDs, packet layout and existing script/material/prefab GUIDs. Keep VRChat SDK requirements in VPM only.
-- Release this candidate only after the matching Core is published and the packaged minimum-version combination is validated.
+- Update Core before installing this codec. Enable prerelease packages in VCC to select the matching beta versions.
 
 ## 0.0.3-beta.2
 

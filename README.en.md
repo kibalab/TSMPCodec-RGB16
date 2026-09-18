@@ -47,6 +47,6 @@ MIT License. Copyright (c) 2026 KIBA_Labs.
 
 ## Preparation API compatibility
 
-This source requires Core 0.3.0-beta.2, currently a release candidate. Core 0.2.0 and 0.3.0-beta.1 lack `PrepareDecode` and cannot compile this codec, even when the calibration material is unassigned. Publish and install the matching Core before this codec. A missing preparation material only selects the original shader path after compilation.
+This release requires the preparation API introduced in Core 0.3.0-beta.2. Core 0.2.0 and 0.3.0-beta.1 lack `PrepareDecode` and cannot compile this codec, even when the calibration material is unassigned. Update Core before installing this codec. A missing preparation material only selects the original shader path after compilation.
 
 UPM uses a version string, while VPM uses a version range. Local/disk or Git installs must supply a compatible Core directly in the project's dependencies; package metadata does not tell UPM to fetch Core from GitHub. For VPM betas, enable pre-release packages and select the matching versions after publication.
