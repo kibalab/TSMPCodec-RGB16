@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.3-beta.4
+
+- Support Core's optional combined decoder output: write the decoded header prefix and payload into the readback texture directly, removing a payload intermediate and packing draw.
+- Retain the legacy shader path and preserve codec IDs, quantization behavior, protocol bytes and asset GUIDs.
+- Target Core 0.3.0-beta.3 through UPM and >=0.3.0-beta.3 through VPM. SDK dependencies remain VPM-only.
+- Verified byte parity, codec switching, payload growth/shrink and fallback in native Player and compiled Udon VM tests. No isolated GPU-time or frame-loss improvement is claimed for this codec.
+- See the matching Core release notes for the complete pipeline measurements and validation limits.
+
 ## 0.0.3-beta.3
 
 - Require Core 0.3.0-beta.2 in UPM and >=0.3.0-beta.2 in VPM because the codec now calls the preparation API. Core 0.2.0 and 0.3.0-beta.1 do not provide that API.
