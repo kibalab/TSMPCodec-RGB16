@@ -2,6 +2,8 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Refine Bytes"
 {
     Properties
     {
+        [HideInInspector] _TSMPHeaderTex ("Decoded Header", 2D) = "black" {}
+        [HideInInspector] _TSMPHeaderPixels ("Header Pixels", Float) = 0
         _MainTex ("TSMP Source", 2D) = "black" {}
         _BlockSize ("Block Size", Float) = 8
         _SampleSize ("Sample Size", Float) = 0
@@ -186,9 +188,16 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Refine Bytes"
 
             float4 frag(v2f i) : SV_Target
             {
+#if defined(TSMP_COMBINED_BYTE_OUTPUT)
+                int baseByte;
+                float4 prefix;
+                if (TSMPReadOutputPrefix(i.uv, baseByte, prefix))
+                    return prefix;
+#else
                 float2 pixel = floor(i.uv * float2(_OutputWidth, _OutputHeight));
                 pixel = clamp(pixel, 0.0, float2(_OutputWidth - 1.0, _OutputHeight - 1.0));
                 int baseByte = ((int)pixel.y * (int)_OutputWidth + (int)pixel.x) * 4;
+#endif
                 if (baseByte >= (int)_ByteCount)
                     return 0.0;
 
