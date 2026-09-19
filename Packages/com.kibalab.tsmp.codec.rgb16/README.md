@@ -5,11 +5,11 @@ TSMP 用の RGB16 codec パッケージです。RGB チャンネルを使い、L
 ## 要件
 
 - TSMP Core: https://github.com/kibalab/TSMP-Core
-- `com.kibalab.tsmp.core` 0.3.0-beta.2 以降
+- `com.kibalab.tsmp.core` 1.0.0 以降
 - Unity 2022.3
 - VRChat で使用する場合のみ Worlds SDK 3.9.0 以降が必要です。通常の Unity には不要です。
 
-通常の Unity では Unity Package Manager で Core 0.3.0-beta.2、基本 codec の Luma4、この codec をインストールします。ローカル checkout は各 package.json を Add package from disk で追加できます。VRCSDK は不要です。UPM は Core 0.3.0-beta.2 を指定し、VPM は Core 0.3.0-beta.2 以降を許可します。
+通常の Unity では Unity Package Manager で Core 1.0.0、基本 codec の Luma4、この codec をインストールします。ローカル checkout は各 package.json を Add package from disk で追加できます。VRCSDK は不要です。UPM は Core 1.0.0 を指定し、VPM は Core 1.0.0 以降を許可します。
 
 ## 使い方
 
@@ -17,10 +17,10 @@ TSMP Core と一緒にこのパッケージをインストールし、Core の `
 
 ## リリース状態
 
-このパッケージは beta 段階で、`v0.0.x-beta.x` 形式のタグを使用します。
+RGB16 2.0.0 は前回の正式版 1.0.0 以降のベータ変更をすべて統合した正式リリースです。Core 1.0.0 を先にインストールしてください。VCC で試験版表示を有効にする必要はありません。
 
 ## 準備 API の互換性
 
-このリリースには Core 0.3.0-beta.2 で追加された準備 API が必要です。Core 0.2.0 と 0.3.0-beta.1 には `PrepareDecode` がなく、準備マテリアルを未設定にしてもコンパイルできません。このコーデックをインストールする前に Core を更新してください。準備マテリアル不足時の従来シェーダーへの fallback は、コンパイル後にのみ機能します。
+このリリースには Core 1.0.0 とそのコーデック準備・出力 API が必要です。コーデックをインストールする前に Core を更新してください。準備マテリアルがない場合は従来のシェーダー経路を使用できますが、互換性のない Core API を補うことはできません。
 
-UPM にはバージョン文字列、VPM には範囲を指定します。ローカル/ディスクまたは Git インストールでは、プロジェクトの依存関係に対応 Core も直接指定します。パッケージのメタデータだけでは UPM は GitHub から Core を取得しません。VPM ベータは公開後に試験版表示を有効にし、対応バージョンを選んでください。
+UPM は Core 1.0.0、VPM は Core >=1.0.0 を指定します。ローカル/ディスクまたは Git インストールでは、プロジェクトの依存関係に Core も直接指定してください。パッケージのメタデータだけでは UPM は GitHub から Core を取得しません。VRChat Worlds SDK は VPM のみの依存関係です。

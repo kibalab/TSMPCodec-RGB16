@@ -15,7 +15,7 @@ RGB16 records TSMP symbols through RGB channels at higher density than Luma4. It
 ## Requirements
 
 - TSMP Core: https://github.com/kibalab/TSMP-Core
-- `com.kibalab.tsmp.core` 0.3.0-beta.2 or newer
+- `com.kibalab.tsmp.core` 1.0.0 or newer
 - Unity 2022.3
 - VRChat Worlds SDK 3.9.0 or newer only for VRChat; not required in ordinary Unity
 
@@ -29,7 +29,7 @@ https://vpm.kiba.red/
 
 Then install `TSMP Core` and `TSMP Codec RGB16`.
 
-For ordinary Unity, install Core 0.3.0-beta.2, the default Luma4 codec and this codec through Unity Package Manager. For a local checkout, use Add package from disk on each package.json; VRCSDK is not required. UPM uses an exact Core 0.3.0-beta.2 dependency; VPM accepts Core 0.3.0-beta.2 or newer.
+For ordinary Unity, install Core 1.0.0, the default Luma4 codec and this codec through Unity Package Manager. For a local checkout, use Add package from disk on each package.json; VRCSDK is not required. UPM uses an exact Core 1.0.0 dependency; VPM accepts Core 1.0.0 or newer.
 
 ## Usage
 
@@ -39,7 +39,7 @@ For ordinary Unity, install Core 0.3.0-beta.2, the default Luma4 codec and this 
 
 ## Release Status
 
-This package is currently beta and uses `v0.0.x-beta.x` tags.
+RGB16 2.0.0 is a stable release consolidating all beta changes since 1.0.0. Install Core 1.0.0 first. VCC does not require prerelease packages for these versions.
 
 ## License
 
@@ -47,6 +47,6 @@ MIT License. Copyright (c) 2026 KIBA_Labs.
 
 ## Preparation API compatibility
 
-This release requires the preparation API introduced in Core 0.3.0-beta.2. Core 0.2.0 and 0.3.0-beta.1 lack `PrepareDecode` and cannot compile this codec, even when the calibration material is unassigned. Update Core before installing this codec. A missing preparation material only selects the original shader path after compilation.
+This release requires Core 1.0.0 and its codec preparation/output APIs. Update Core before installing this codec. Missing preparation materials can select the legacy shader path, but cannot compensate for an incompatible Core API.
 
-UPM uses a version string, while VPM uses a version range. Local/disk or Git installs must supply a compatible Core directly in the project's dependencies; package metadata does not tell UPM to fetch Core from GitHub. For VPM betas, enable pre-release packages and select the matching versions after publication.
+UPM uses Core 1.0.0; VPM accepts Core >=1.0.0. Local/disk or Git installs must supply Core directly in the project's dependencies; package metadata does not tell UPM to fetch Core from GitHub. VRChat Worlds SDK remains a VPM-only dependency.
