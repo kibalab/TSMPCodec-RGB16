@@ -4,6 +4,7 @@ Shader "Hidden/TSMP/Decode RGB16 Refine Bytes"
     {
         [HideInInspector] _TSMPHeaderTex ("Decoded Header", 2D) = "black" {}
         [HideInInspector] _TSMPHeaderPixels ("Header Pixels", Float) = 0
+        [HideInInspector] _UseBilinear4 ("Bilinear 4x4 sampling", Float) = 0
         _MainTex ("TSMP Source", 2D) = "black" {}
         _BlockSize ("Block Size", Float) = 8
         _SampleSize ("Sample Size", Float) = 0
@@ -32,6 +33,7 @@ Shader "Hidden/TSMP/Decode RGB16 Refine Bytes"
             #pragma target 3.5
             #pragma vertex vert
             #pragma fragment frag
+            #define TSMP_ENABLE_RGB_BOX4
             #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
 
             float _Rgb16CalibrationStartBlock;
@@ -133,72 +135,17 @@ Shader "Hidden/TSMP/Decode RGB16 Refine Bytes"
                 return bestR | (bestG << 4) | (bestB << 8);
             }
 
-            int DecodeRgb16Symbol444(int symbolIndex)
+            int DecodeRgb16Symbol(uint symbolIndex)
             {
-                float3 rgb = SampleBlockByIndex(PayloadBlockIndex(symbolIndex));
+                float3 rgb = SampleBlockByIndex((uint)_StartBlock + symbolIndex);
                 int r = ClassifyChannel444(rgb.r, 0, 0);
                 int g = ClassifyChannel444(rgb.g, 16, 1);
                 int b = ClassifyChannel444(rgb.b, 32, 2);
                 return RefineRgb16Local444(rgb, r, g, b);
             }
 
-            int SelectCachedSymbol(int symbolOffset, int s0, int s1, int s2, int s3)
-            {
-                if (symbolOffset == 0) return s0;
-                if (symbolOffset == 1) return s1;
-                if (symbolOffset == 2) return s2;
-                return s3;
-            }
-
-            int DecodeByteFromRgb12Symbols(int bitOffset, int s0, int s1, int s2, int s3)
-            {
-                int symbolOffset = FloorDivNonNegative(bitOffset, 12.0);
-                int bitShift = bitOffset - symbolOffset * 12;
-                int symbol = SelectCachedSymbol(symbolOffset, s0, s1, s2, s3);
-
-                if (bitShift + 8 <= 12)
-                    return (symbol >> bitShift) & 0xFF;
-
-                int nextSymbol = SelectCachedSymbol(symbolOffset + 1, s0, s1, s2, s3);
-                int bitsFromFirst = 12 - bitShift;
-                int lowMask = (1 << bitsFromFirst) - 1;
-                int highBits = 8 - bitsFromFirst;
-                int highMask = (1 << highBits) - 1;
-                return ((symbol >> bitShift) & lowMask) | ((nextSymbol & highMask) << bitsFromFirst);
-            }
-
-            float4 frag(v2f i) : SV_Target
-            {
-#if defined(TSMP_COMBINED_BYTE_OUTPUT)
-                int baseByte;
-                float4 prefix;
-                if (TSMPReadOutputPrefix(i.uv, baseByte, prefix))
-                    return prefix;
-#else
-                float2 pixel = floor(i.uv * float2(_OutputWidth, _OutputHeight));
-                pixel = clamp(pixel, 0.0, float2(_OutputWidth - 1.0, _OutputHeight - 1.0));
-                int baseByte = ((int)pixel.y * (int)_OutputWidth + (int)pixel.x) * 4;
-#endif
-
-                if (baseByte >= (int)_ByteCount)
-                    return 0.0;
-
-                int baseBit = baseByte * 8;
-                int symbolIndex = FloorDivNonNegative(baseBit, 12.0);
-                int firstBitOffset = baseBit - symbolIndex * 12;
-
-                int s0 = DecodeRgb16Symbol444(symbolIndex);
-                int s1 = DecodeRgb16Symbol444(symbolIndex + 1);
-                int s2 = DecodeRgb16Symbol444(symbolIndex + 2);
-                int s3 = firstBitOffset == 8 ? DecodeRgb16Symbol444(symbolIndex + 3) : 0;
-
-                int b0 = baseByte + 0 < (int)_ByteCount ? DecodeByteFromRgb12Symbols(firstBitOffset + 0, s0, s1, s2, s3) : 0;
-                int b1 = baseByte + 1 < (int)_ByteCount ? DecodeByteFromRgb12Symbols(firstBitOffset + 8, s0, s1, s2, s3) : 0;
-                int b2 = baseByte + 2 < (int)_ByteCount ? DecodeByteFromRgb12Symbols(firstBitOffset + 16, s0, s1, s2, s3) : 0;
-                int b3 = baseByte + 3 < (int)_ByteCount ? DecodeByteFromRgb12Symbols(firstBitOffset + 24, s0, s1, s2, s3) : 0;
-
-                return float4(b0 / 255.0, b1 / 255.0, b2 / 255.0, b3 / 255.0);
-            }
+            #define RGB16_SYMBOL_BITS 12u
+            #include "Rgb16ByteOutput.cginc"
             ENDCG
         }
     }

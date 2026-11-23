@@ -5,6 +5,7 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
         [HideInInspector] _TSMPHeaderTex ("Decoded Header", 2D) = "black" {}
         [HideInInspector] _TSMPHeaderPixels ("Header Pixels", Float) = 0
         [HideInInspector] _CalibrationLut ("Calibration LUT", 2D) = "black" {}
+        [HideInInspector] _UseBilinear4 ("Bilinear 4x4 sampling", Float) = 0
         _MainTex ("TSMP Source", 2D) = "black" {}
         _BlockSize ("Block Size", Float) = 8
         _SampleSize ("Sample Size", Float) = 0
@@ -36,6 +37,7 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile_local _ TSMP_CALIBRATION_LUT
+            #define TSMP_ENABLE_RGB_BOX4
             #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
 
 #if defined(TSMP_CALIBRATION_LUT)
@@ -88,7 +90,7 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
                 return bestIndex;
             }
 
-            int DecodeRgb16Symbol(int symbolIndex)
+            int DecodeRgb16Symbol(uint symbolIndex)
             {
                 int rBits = (int)_RBits;
                 int gBits = (int)_GBits;
@@ -99,89 +101,15 @@ Shader "Hidden/TSMP/Decode RGB16 Variable Bytes"
                 int gOffset = rCount;
                 int bOffset = rCount + gCount;
 
-                float3 rgb = SampleBlockByIndex(PayloadBlockIndex(symbolIndex));
+                float3 rgb = SampleBlockByIndex((uint)_StartBlock + symbolIndex);
                 int r = ClassifyChannel(rgb.r, rCount, 0, 0);
                 int g = ClassifyChannel(rgb.g, gCount, gOffset, 1);
                 int b = ClassifyChannel(rgb.b, bCount, bOffset, 2);
                 return r | (g << rBits) | (b << (rBits + gBits));
             }
 
-            int DecodeByte(int byteIndex)
-            {
-                if (byteIndex < 0 || byteIndex >= (int)_ByteCount)
-                    return 0;
-
-                int totalBits = (int)_RBits + (int)_GBits + (int)_BBits;
-                int bitIndex = byteIndex * 8;
-                int symbolIndex = FloorDivNonNegative(bitIndex, (float)totalBits);
-                int bitShift = bitIndex - symbolIndex * totalBits;
-                int symbol = DecodeRgb16Symbol(symbolIndex);
-
-                if (bitShift + 8 <= totalBits)
-                    return (symbol >> bitShift) & 0xFF;
-
-                int nextSymbol = DecodeRgb16Symbol(symbolIndex + 1);
-                int bitsFromFirst = totalBits - bitShift;
-                int lowMask = (1 << bitsFromFirst) - 1;
-                int highBits = 8 - bitsFromFirst;
-                int highMask = (1 << highBits) - 1;
-                return ((symbol >> bitShift) & lowMask) | ((nextSymbol & highMask) << bitsFromFirst);
-            }
-
-            float4 frag(v2f i) : SV_Target
-            {
-#if defined(TSMP_COMBINED_BYTE_OUTPUT)
-                int baseByte;
-                float4 prefix;
-                if (TSMPReadOutputPrefix(i.uv, baseByte, prefix))
-                    return prefix;
-#else
-                float2 pixel = floor(i.uv * float2(_OutputWidth, _OutputHeight));
-                pixel = clamp(pixel, 0.0, float2(_OutputWidth - 1.0, _OutputHeight - 1.0));
-                int baseByte = ((int)pixel.y * (int)_OutputWidth + (int)pixel.x) * 4;
-#endif
-                if (baseByte >= (int)_ByteCount)
-                    return 0.0;
-
-                int totalBits = (int)_RBits + (int)_GBits + (int)_BBits;
-                if (totalBits < 8)
-                    return float4(DecodeByte(baseByte), DecodeByte(baseByte + 1),
-                        DecodeByte(baseByte + 2), DecodeByte(baseByte + 3)) / 255.0;
-
-                int bitIndex = baseByte * 8;
-                int symbolIndex = FloorDivNonNegative(bitIndex, (float)totalBits);
-                int bitShift = bitIndex - symbolIndex * totalBits;
-                int requiredBits = min(4, (int)_ByteCount - baseByte) * 8;
-                uint packed = (uint)DecodeRgb16Symbol(symbolIndex) >> bitShift;
-                int nextBit = totalBits - bitShift;
-
-                if (nextBit < requiredBits)
-                {
-                    packed |= (uint)DecodeRgb16Symbol(symbolIndex + 1) << nextBit;
-                    nextBit += totalBits;
-                }
-                if (nextBit < requiredBits)
-                {
-                    packed |= (uint)DecodeRgb16Symbol(symbolIndex + 2) << nextBit;
-                    nextBit += totalBits;
-                }
-                if (nextBit < requiredBits)
-                {
-                    packed |= (uint)DecodeRgb16Symbol(symbolIndex + 3) << nextBit;
-                    nextBit += totalBits;
-                }
-                if (nextBit < requiredBits)
-                {
-                    packed |= (uint)DecodeRgb16Symbol(symbolIndex + 4) << nextBit;
-                    nextBit += totalBits;
-                }
-
-                if (requiredBits < 32)
-                    packed &= (1u << requiredBits) - 1u;
-
-                return float4(packed & 0xFFu, (packed >> 8) & 0xFFu,
-                    (packed >> 16) & 0xFFu, (packed >> 24) & 0xFFu) / 255.0;
-            }
+            #define RGB16_SYMBOL_BITS max(1u, (uint)(_RBits + _GBits + _BBits))
+            #include "Rgb16ByteOutput.cginc"
             ENDCG
         }
     }
