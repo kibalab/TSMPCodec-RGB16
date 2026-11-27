@@ -17,6 +17,10 @@ namespace K13A.TSMP
         public Material variableByteDecodeMaterial;
         public Material variableRefineByteDecodeMaterial;
         public Material[] debugMaterials;
+        [Tooltip("Use four bilinear reads for native-resolution 4x4 receive samples. Other footprints keep the standard sampler.")]
+        public bool useBilinear4;
+        [Tooltip("Prepare a calibration LUT even for single-sample decoding in modes that support it.")]
+        public bool preferCalibrationLut;
 #if UDONSHARP
         private byte[] _rEncoderLevels;
         private byte[] _gEncoderLevels;
@@ -156,9 +160,12 @@ namespace K13A.TSMP
         public override void PrepareDecode(Texture source, Material material)
         {
             base.PrepareDecode(source, material);
-            // 단일 샘플과 Refine 모드는 LUT 적용 후 비용이 증가해 기존 디코드 경로를 유지한다.
-            if (material == null || material == refine444ByteDecodeMaterial || material == variableRefineByteDecodeMaterial ||
-                GetDecodeSampleSize(material) <= 1)
+            if (material == null)
+                return;
+            material.SetFloat("_UseBilinear4", useBilinear4 ? 1f : 0f);
+            // Refine에서는 LUT가 더 느렸고, 단일 샘플에서는 기본적으로 준비 비용을 피한다.
+            if (material == refine444ByteDecodeMaterial || material == variableRefineByteDecodeMaterial ||
+                (!preferCalibrationLut && GetDecodeSampleSize(material) <= 1))
                 return;
             int r = material.HasProperty("_RBits") ? Mathf.Clamp((int)material.GetFloat("_RBits"), 1, 8) : 4;
             int g = material.HasProperty("_GBits") ? Mathf.Clamp((int)material.GetFloat("_GBits"), 1, 8) : 4;

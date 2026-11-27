@@ -9,18 +9,23 @@ TSMP 用の RGB16 codec パッケージです。RGB チャンネルを使い、L
 - Unity 2022.3
 - VRChat で使用する場合のみ Worlds SDK 3.9.0 以降が必要です。通常の Unity には不要です。
 
-通常の Unity では Unity Package Manager で Core 1.0.0、基本 codec の Luma4、この codec をインストールします。ローカル checkout は各 package.json を Add package from disk で追加できます。VRCSDK は不要です。UPM は Core 1.0.0 を指定し、VPM は Core 1.0.0 以降を許可します。
+通常の Unity では Unity Package Manager で Core 1.0.0 以降、基本 codec の Luma4、この codec をインストールします。ローカル checkout は各 package.json を Add package from disk で追加できます。VRCSDK は不要です。UPM は Core 1.0.0 を指定し、VPM は Core 1.0.0 以降を許可します。
 
 ## 使い方
 
 TSMP Core と一緒にこのパッケージをインストールし、Core の `Samples/TSMPController.prefab` をシーンに配置します。その後、`TSMPSetup` の Codec タブで `RGB16` を選択します。設定は自動適用され、SDK の有無で操作手順は変わりません。
 
+### 受信時のサンプリング
+
+`Use Bilinear 4` は既定でオフです。対応する TSMP Core と組み合わせ、入力テクスチャが指定解像度と一致し、サンプル範囲が 4×4 のときだけ、16 点の平均を 4 回のバイリニアサンプリングで求めます。それ以外は従来どおり各点を読み取ります。
+単一サンプルでも LUT を使いたい場合は `Prefer Calibration Lut` をオンにします。Refine モードは対象外です。準備マテリアルがない場合は直接読み取ります。
+
 ## リリース状態
 
-RGB16 2.0.0 は前回の正式版 1.0.0 以降のベータ変更をすべて統合した正式リリースです。Core 1.0.0 を先にインストールしてください。VCC で試験版表示を有効にする必要はありません。
+[RGB16 2.1.0](https://github.com/kibalab/TSMPCodec-RGB16/releases/tag/v2.1.0) は受信処理を改善した正式版です。Core 1.1.0 と Luma4 1.1.0 の組み合わせ を推奨します。Core 1.0.0 も引き続き使用でき、送信フォーマットに変更はありません。
 
 ## 準備 API の互換性
 
-このリリースには Core 1.0.0 とそのコーデック準備・出力 API が必要です。コーデックをインストールする前に Core を更新してください。準備マテリアルがない場合は従来のシェーダー経路を使用できますが、互換性のない Core API を補うことはできません。
+このリリースには Core 1.0.0 以降 とそのコーデック準備・出力 API が必要です。コーデックをインストールする前に Core を更新してください。準備マテリアルがない場合は従来のシェーダー経路を使用できますが、互換性のない Core API を補うことはできません。
 
 UPM は Core 1.0.0、VPM は Core >=1.0.0 を指定します。ローカル/ディスクまたは Git インストールでは、プロジェクトの依存関係に Core も直接指定してください。パッケージのメタデータだけでは UPM は GitHub から Core を取得しません。VRChat Worlds SDK は VPM のみの依存関係です。

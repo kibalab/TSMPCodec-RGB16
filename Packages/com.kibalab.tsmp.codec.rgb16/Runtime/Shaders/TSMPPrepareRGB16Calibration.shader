@@ -2,6 +2,7 @@ Shader "Hidden/TSMP/Prepare RGB16 Calibration"
 {
     Properties
     {
+        [HideInInspector] _UseBilinear4 ("Bilinear 4x4 sampling", Float) = 0
         _MainTex ("TSMP Source", 2D) = "black" {}
         _BlockSize ("Block Size", Float) = 8
         _SampleSize ("Sample Size", Float) = 0
@@ -28,6 +29,7 @@ Shader "Hidden/TSMP/Prepare RGB16 Calibration"
             #pragma target 3.5
             #pragma vertex vert
             #pragma fragment frag
+            #define TSMP_ENABLE_RGB_BOX4
             #include "Packages/com.kibalab.tsmp.core/Runtime/Codecs/Common/Shaders/cgincs/TSMPDecodeCommon.cginc"
 
             float _Rgb16CalibrationStartBlock;

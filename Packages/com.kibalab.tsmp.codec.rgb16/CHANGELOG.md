@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.1.0
+
+- Read each symbol once when assembling up to four output bytes. Handle variable bit depths, symbols smaller than one byte, and partial output groups without assuming 16 bits per block.
+- Allow single-sample LUT preparation in Direct modes; Refine modes retain their own classification.
+- Add optional four-tap bilinear sampling for eligible native-resolution 4x4 footprints on Core 1.1.0. It is off by default; Core 1.0.0 and other footprints use ordinary sampling.
+- Refresh bundled Udon bytecode and field metadata for the receive options.
+- Declare the default Luma4 header codec as a package dependency.
+- Core 1.0.0 and 1.1.0 supported; codec ID and sender wire format unchanged.
+
 ## 2.0.0
 
 Stable promotion of all 0.0.3-beta.1 through 0.0.3-beta.4 changes since 1.0.0. No runtime/shader changes from 0.0.3-beta.4.
