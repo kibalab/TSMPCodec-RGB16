@@ -29,7 +29,7 @@ https://vpm.kiba.red/
 
 Then install `TSMP Core` and `TSMP Codec RGB16`.
 
-For ordinary Unity, install Core 1.0.0, the default Luma4 codec and this codec through Unity Package Manager. For a local checkout, use Add package from disk on each package.json; VRCSDK is not required. UPM uses an exact Core 1.0.0 dependency; VPM accepts Core 1.0.0 or newer.
+For ordinary Unity, install Core 1.0.0 or newer, the default Luma4 codec and this codec through Unity Package Manager. For a local checkout, use Add package from disk on each package.json; VRCSDK is not required. UPM uses an exact Core 1.0.0 dependency; VPM accepts Core 1.0.0 or newer.
 
 ## Usage
 
@@ -39,7 +39,7 @@ For ordinary Unity, install Core 1.0.0, the default Luma4 codec and this codec t
 
 ## Release Status
 
-RGB16 2.0.0 is a stable release consolidating all beta changes since 1.0.0. Install Core 1.0.0 first. VCC does not require prerelease packages for these versions.
+[RGB16 2.1.0](https://github.com/kibalab/TSMPCodec-RGB16/releases/tag/v2.1.0) is a stable receiver update. Recommended: Core 1.1.0 and Luma4 1.1.0. Core 1.0.0 remains supported; the sender wire format is unchanged.
 
 ## License
 
@@ -47,6 +47,6 @@ MIT License. Copyright (c) 2026 KIBA_Labs.
 
 ## Preparation API compatibility
 
-This release requires Core 1.0.0 and its codec preparation/output APIs. Update Core before installing this codec. Missing preparation materials can select the legacy shader path, but cannot compensate for an incompatible Core API.
+This release requires Core 1.0.0 or newer and its codec preparation/output APIs. Update Core before installing this codec. Missing preparation materials can select the legacy shader path, but cannot compensate for an incompatible Core API.
 
 UPM uses Core 1.0.0; VPM accepts Core >=1.0.0. Local/disk or Git installs must supply Core directly in the project's dependencies; package metadata does not tell UPM to fetch Core from GitHub. VRChat Worlds SDK remains a VPM-only dependency.
